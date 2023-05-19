@@ -1,7 +1,7 @@
 version: "3.9"
 
 networks:
-  wordpress:
+  typecho:
 
 services:
   nginx:
@@ -12,12 +12,12 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./wordpress:/var/www/html:delegated
+      - ./typecho:/var/www/html:delegated
     depends_on:
       - php
       - mysql
     networks:
-      - wordpress
+      - typecho
 
   mysql:
     image: mysql:5.7
@@ -26,14 +26,14 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_DATABASE: wp
-      MYSQL_USER: wp
+      MYSQL_DATABASE: typecho
+      MYSQL_USER: typecho
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
     volumes:
       - ./mysql/data:/var/lib/mysql
     networks:
-      - wordpress
+      - typecho
 
   php:
     build:
@@ -41,17 +41,6 @@ services:
       dockerfile: php.dockerfile
     container_name: php
     volumes:
-      - ./wordpress:/var/www/html:delegated
+      - ./typecho:/var/www/html:delegated
     networks:
-      - wordpress
-
-  wp:
-    build:
-      context: .
-      dockerfile: php.dockerfile
-    container_name: wp
-    entrypoint: ["wp", "--allow-root"]
-    volumes:
-      - ./wordpress:/var/www/html:delegated
-    networks:
-      - wordpress
+      - typecho
